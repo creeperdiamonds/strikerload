@@ -88,7 +88,7 @@
             <phase>package</phase>
             <goals><goal>shade</goal></goals>
             <configuration>
-              <createDependencyReducedPom>false</createDependencyReducedPom>
+             <outputFile>${project.build.directory}/StrikerLoad-${project.version}-${jar.classifier}.jar</outputFile> <createDependencyReducedPom>false</createDependencyReducedPom>
               <artifactSet>
                 <includes>
                   <include>com.creeperdiamonds:strikerload-core</include>
