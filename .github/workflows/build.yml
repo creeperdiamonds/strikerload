@@ -98,10 +98,14 @@ jobs:
       - name: Package
         run: mvn -B --no-transfer-progress clean package -P ${{ matrix.profile }}
 
+      # maven-shade renames the pre-shade jar to original-<name>.jar and puts
+      # the shaded one in its place. The original- jars do NOT contain
+      # strikerload-core and would throw NoClassDefFoundError at runtime, so
+      # every glob below is anchored to StrikerLoad-* to exclude them.
       - name: Checksum
         run: |
           cd strikerload-bukkit/target
-          for j in *.jar; do
+          for j in StrikerLoad-*.jar; do
             sha256sum "$j" | tee "$j.sha256"
           done
 
@@ -109,7 +113,7 @@ jobs:
         with:
           name: StrikerLoad-${{ matrix.label }}
           path: |
-            strikerload-bukkit/target/*.jar
+            strikerload-bukkit/target/StrikerLoad-*.jar
             strikerload-bukkit/target/*.sha256
 
   release:
@@ -129,7 +133,7 @@ jobs:
       - uses: softprops/action-gh-release@v2
         with:
           files: |
-            dist/**/*.jar
+            dist/**/StrikerLoad-*.jar
             SHA256SUMS.txt
           body: |
             Built by GitHub Actions from ${{ github.sha }}.
