@@ -46,6 +46,7 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-shade-plugin</artifactId>
           <version>3.6.0</version>
+<outputFile>${project.build.directory}/StrikerLoad-${project.version}-${jar.classifier}.jar</outputFile>
         </plugin>
       </plugins>
     </pluginManagement>
