@@ -12,7 +12,7 @@ Community software. Not affiliated with PaperMC, SpigotMC or Mojang.
 
 ```
 strikerload-core     platform-independent maths and state; zero dependencies
-strikerload-bukkit   Paper/Spigot/Purpur module
+strikerload-paper   Paper/Purpur/Folia module
 strikerload-fabric   planned; will consume core unchanged
 ```
 
@@ -29,7 +29,7 @@ mvn clean package -P mc26_1       # 26.1.x (JDK 25)
 mvn clean package -P mc1_21_11    # 1.21.11 (JDK 21)
 ```
 
-Jars land in `strikerload-bukkit/target/`.
+Jars land in `strikerload-paper/target/`.
 
 | Target   | paper-api                | api-version | JDK |
 |----------|--------------------------|-------------|-----|

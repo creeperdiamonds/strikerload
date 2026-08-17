@@ -35,7 +35,7 @@ the CI pattern.
 
 ### Scope of these guarantees
 
-They apply to `strikerload-core` and `strikerload-bukkit` as shipped today.
+They apply to `strikerload-core` and `strikerload-paper` as shipped today.
 
 They are **not** portable promises. Legacy targets (1.8.8 and similar) have no
 PersistentDataContainer and no ray tracing, so item data and targeting there

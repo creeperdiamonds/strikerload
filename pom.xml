@@ -19,13 +19,13 @@
 
   <modules>
     <module>strikerload-core</module>
-    <module>strikerload-bukkit</module>
+    <module>strikerload-paper</module>
     <!-- strikerload-fabric: later, consumes strikerload-core unchanged -->
   </modules>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <!-- Overridden by the platform profiles in strikerload-bukkit. Core is
+    <!-- Overridden by the platform profiles in strikerload-paper. Core is
          compiled at the lowest release any platform needs so every module
          can consume it. -->
     <java.release>21</java.release>
