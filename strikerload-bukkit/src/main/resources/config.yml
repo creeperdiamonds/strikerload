@@ -1,0 +1,75 @@
+# StrikerLoad configuration
+# /orbital reload applies changes live.
+
+# Consume the payload item per shot (ignored in creative). This is the ammo system.
+consume-item: true
+
+cooldown-seconds: 60
+creative-cooldown-seconds: 500
+
+# How far a player can paint a target by looking at it.
+max-range: 200.0
+
+# Worlds where the cannon works. Empty = everywhere.
+# Strongly recommended you restrict this before opening it to players.
+worlds: []
+
+# Height TNT is spawned at. 0 = use the world's build limit.
+drop-height: 0
+
+# Delay before a STAB column detonates, in seconds.
+rod-delay-seconds: 0.75
+
+# --- Default yields per payload ---
+defaults:
+  nuke: 10          # ring count
+  stab: 1           # unused, column is fixed
+  railgun: 45       # arrow count
+  wolf: 150         # wolf count
+  darkness: 50      # block radius
+  stasis: 1         # unused
+
+# --- Items handed out by /orbital give ---
+items:
+  nuke: {material: NETHERITE_BLOCK}
+  stab: {material: END_ROD}
+  railgun: {material: SPECTRAL_ARROW}
+  wolf: {material: BONE}
+  darkness: {material: ECHO_SHARD}
+  stasis: {material: ENDER_PEARL}
+
+# --- Payload tuning ---
+nuke:
+  ring-spacing: 3.0            # blocks between concentric rings
+  ring-density: 1.4            # one TNT per this many blocks of circumference
+  ring-delay-ticks: 0          # >0 staggers rings for a rolling barrage
+  extra-downward-velocity: 0.0 # 0 = natural freefall
+
+stab:
+  min-y: -63
+  max-y: 319
+  spacing: 1                   # blocks between TNT in the column
+
+railgun:
+  spread: 0.6
+  speed: 6.0
+  damage: 200.0
+  delay-seconds: 4.0
+
+wolf:
+  scatter: 4.0
+
+darkness:
+  duration-seconds: 25
+
+stasis:
+  delay-seconds: 0.5
+
+# --- Safety rails ---
+# These exist because a mistyped ring count can spawn tens of thousands of
+# entities and take the server down. Raise them deliberately, not by default.
+safety:
+  max-tnt-per-strike: 2000
+  max-wolves-per-strike: 200
+  impact-timeout-ticks: 600    # force-detonate stragglers so none linger
+  warn-tnt-limit: true

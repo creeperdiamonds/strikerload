@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.creeperdiamonds</groupId>
+  <artifactId>strikerload-parent</artifactId>
+  <version>1.0.0</version>
+  <packaging>pom</packaging>
+  <name>StrikerLoad</name>
+
+  <licenses>
+    <license>
+      <name>GNU Affero General Public License v3.0 or later</name>
+      <url>https://www.gnu.org/licenses/agpl-3.0.txt</url>
+    </license>
+  </licenses>
+
+  <modules>
+    <module>strikerload-core</module>
+    <module>strikerload-bukkit</module>
+    <!-- strikerload-fabric: later, consumes strikerload-core unchanged -->
+  </modules>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- Overridden by the platform profiles in strikerload-bukkit. Core is
+         compiled at the lowest release any platform needs so every module
+         can consume it. -->
+    <java.release>21</java.release>
+  </properties>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.13.0</version>
+          <configuration>
+            <release>${java.release}</release>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>3.6.0</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+</project>

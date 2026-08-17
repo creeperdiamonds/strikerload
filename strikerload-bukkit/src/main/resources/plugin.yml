@@ -1,0 +1,41 @@
+name: StrikerLoad
+version: '${project.version}'
+main: com.creeperdiamonds.strikerload.bukkit.StrikerLoadPlugin
+# Filtered per profile: 26.2 / 26.1 / 1.21
+# Must be major.minor or major.minor.patch - a bare '26' throws
+# IllegalArgumentException at load time.
+api-version: '${api.version}'
+author: creeperdiamonds
+description: Orbital strike cannon with TNT-based payloads.
+folia-supported: true
+
+commands:
+  strikerload:
+    description: Issue payload items or dispatch a strike.
+    usage: /strikerload <give|strike|reload>
+    aliases: [sl, strikeload]
+    permission: strikerload.admin
+
+permissions:
+  strikerload.admin:
+    description: Access to the /strikerload command.
+    default: op
+  strikerload.use.*:
+    description: Allows firing every payload.
+    default: op
+    children:
+      strikerload.use.nuke: true
+      strikerload.use.stab: true
+      strikerload.use.railgun: true
+      strikerload.use.wolf: true
+      strikerload.use.darkness: true
+      strikerload.use.stasis: true
+  strikerload.use.nuke: {default: false}
+  strikerload.use.stab: {default: false}
+  strikerload.use.railgun: {default: false}
+  strikerload.use.wolf: {default: false}
+  strikerload.use.darkness: {default: false}
+  strikerload.use.stasis: {default: false}
+  strikerload.bypass.cooldown:
+    description: Skip the recharge timer.
+    default: false

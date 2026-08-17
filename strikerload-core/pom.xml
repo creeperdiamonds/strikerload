@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.creeperdiamonds</groupId>
+    <artifactId>strikerload-parent</artifactId>
+    <version>1.0.0</version>
+  </parent>
+
+  <artifactId>strikerload-core</artifactId>
+  <name>StrikerLoad Core</name>
+  <description>Platform-independent strike geometry and state. No Minecraft dependencies.</description>
+
+  <!-- Deliberately zero dependencies. If this module ever gains one,
+       something has leaked out of a platform module. -->
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <!-- Lowest release across all planned platforms so Fabric and any
+               legacy module can consume this jar unchanged. -->
+          <release>21</release>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

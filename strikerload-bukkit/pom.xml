@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.creeperdiamonds</groupId>
+    <artifactId>strikerload-parent</artifactId>
+    <version>1.0.0</version>
+  </parent>
+
+  <artifactId>strikerload-bukkit</artifactId>
+  <name>StrikerLoad Bukkit</name>
+
+  <repositories>
+    <repository>
+      <id>papermc</id>
+      <url>https://repo.papermc.io/repository/maven-public/</url>
+    </repository>
+  </repositories>
+
+  <profiles>
+    <!-- Minecraft 26.2 "Chaos Cubed". Java 25. Default. -->
+    <profile>
+      <id>mc26_2</id>
+      <activation><activeByDefault>true</activeByDefault></activation>
+      <properties>
+        <java.release>25</java.release>
+        <api.version>26.2</api.version>
+        <paper.version>[26.2.build,)</paper.version>
+        <jar.classifier>mc26.2</jar.classifier>
+      </properties>
+    </profile>
+
+    <!-- Minecraft 26.1.x "Tiny Takeover". Java 25. -->
+    <profile>
+      <id>mc26_1</id>
+      <properties>
+        <java.release>25</java.release>
+        <api.version>26.1</api.version>
+        <paper.version>[26.1.2.build,)</paper.version>
+        <jar.classifier>mc26.1</jar.classifier>
+      </properties>
+    </profile>
+
+    <!-- Minecraft 1.21.11 and below. Old -R0.1-SNAPSHOT scheme. Java 21.
+         A jar compiled at release 25 throws UnsupportedClassVersionError
+         here, which is why these are separate artifacts. -->
+    <profile>
+      <id>mc1_21_11</id>
+      <properties>
+        <java.release>21</java.release>
+        <api.version>1.21</api.version>
+        <paper.version>1.21.11-R0.1-SNAPSHOT</paper.version>
+        <jar.classifier>mc1.21.11</jar.classifier>
+      </properties>
+    </profile>
+  </profiles>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.creeperdiamonds</groupId>
+      <artifactId>strikerload-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.papermc.paper</groupId>
+      <artifactId>paper-api</artifactId>
+      <version>${paper.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>StrikerLoad-${project.version}-${jar.classifier}</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+      <!-- Core is the only shaded dependency; paper-api is provided. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals><goal>shade</goal></goals>
+            <configuration>
+              <createDependencyReducedPom>false</createDependencyReducedPom>
+              <artifactSet>
+                <includes>
+                  <include>com.creeperdiamonds:strikerload-core</include>
+                </includes>
+              </artifactSet>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+        <includes><include>plugin.yml</include></includes>
+      </resource>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>false</filtering>
+        <excludes><exclude>plugin.yml</exclude></excludes>
+      </resource>
+    </resources>
+  </build>
+</project>
