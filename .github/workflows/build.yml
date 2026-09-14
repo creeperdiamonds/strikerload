@@ -256,7 +256,11 @@ jobs:
             dist/**/StrikerLoad-Fabric-*.jar
             SHA256SUMS.txt
           body: |
-            Fabric build of StrikerLoad. Server-side only, and it needs Fabric API.
+            Fabric build of StrikerLoad. Needs Fabric API.
+
+            Works on dedicated servers, in **single-player**, and on a LAN
+            host. Other players do not need the mod - everything it spawns is
+            vanilla, so unmodified clients can join and see it all.
 
             ## Which jar do I download?
 
@@ -268,6 +272,10 @@ jobs:
 
             These go in `mods/`, not `plugins/`. There is one jar per
             Minecraft generation and they are **not** interchangeable.
+
+            Playing single-player? Load the world with **Allow Cheats on** -
+            that is the only way to reach `/strikerload give`, and without it
+            there is no way to get a payload item.
 
             Two things that differ from the Paper plugin: permissions gate on
             vanilla **operator level** rather than the plugin's

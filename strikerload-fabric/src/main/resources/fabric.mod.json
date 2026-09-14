@@ -11,7 +11,7 @@
 		"issues": "https://github.com/creeperdiamonds/strikerload/issues"
 	},
 	"license": "AGPL-3.0-or-later",
-	"environment": "server",
+	"environment": "*",
 	"entrypoints": {
 		"main": ["com.creeperdiamonds.strikerload.fabric.StrikerLoadMod"]
 	},

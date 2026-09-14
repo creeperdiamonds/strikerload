@@ -12,3 +12,6 @@ build/
 # The wrapper jar has to be committed or CI cannot run ./gradlew at all.
 # It is exempted from the *.jar rule above deliberately - do not remove.
 !**/gradle/wrapper/gradle-wrapper.jar
+
+# Loom runServer/runClient working directory
+run/

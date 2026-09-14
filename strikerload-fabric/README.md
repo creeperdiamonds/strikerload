@@ -1,7 +1,18 @@
 # strikerload-fabric
 
 The Fabric build of StrikerLoad, for Minecraft **26.2**, **26.1.x** and
-**1.21.11**. Server-side only, and it needs Fabric API.
+**1.21.11**. Needs Fabric API.
+
+Declared `"environment": "*"`, so the jar loads on dedicated servers, in
+single-player and on a LAN host. All of its behaviour is still server-side -
+there is no client entrypoint, no mixins and not one reference to a
+`net.minecraft.client` class - but the mod has to be *allowed* to load on the
+client for the integrated server inside it to run any of this.
+
+**Other players do not need the mod.** Everything it produces is vanilla:
+primed TNT, wolves, arrows, the darkness effect, sounds, and item
+name/lore/glint/`custom_data`. That all syncs through normal vanilla packets,
+so unmodified clients can join a server running it and see the whole show.
 
 `strikerload-core` (the payload maths) is shared with the Paper build
 unchanged. Only the platform layer is new.
@@ -51,6 +62,20 @@ There is exactly one exception, in `PayloadDelivery#wolfType()`. 1.21.11 and
 became variant-driven. The registry id `minecraft:wolf` is stable across all
 three, so the type is looked up rather than referenced. If a future version
 breaks something the same way, prefer that trick over forking the file.
+
+## Single-player
+
+Load a world with **Allow Cheats on**. That is not a permission quirk of this
+mod - it is the only way to reach `/strikerload give`, and without the command
+there is no way to obtain a payload item at all, since a custom-NBT item
+cannot come out of the creative inventory. With cheats on you hold operator
+level, which satisfies the gate described below, and everything works.
+
+Leaving a world clears pending work. Single-player and LAN start and stop
+servers repeatedly inside one JVM, so `SERVER_STOPPED` drops scheduled charges,
+impact watchers and cooldowns; otherwise they would hold a dead `ServerLevel`
+and fire into it on the next world's first tick. A dedicated server never hit
+this, because the process ended with the world.
 
 ## How it differs from the Paper build
 

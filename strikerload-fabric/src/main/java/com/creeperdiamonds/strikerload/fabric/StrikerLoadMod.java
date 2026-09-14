@@ -24,6 +24,7 @@ import com.creeperdiamonds.strikerload.core.CooldownTracker;
 import com.creeperdiamonds.strikerload.core.Payload;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
@@ -80,6 +81,16 @@ public final class StrikerLoadMod implements ModInitializer {
         settings = FabricSettings.load(configPath);
 
         ServerTickEvents.END_SERVER_TICK.register(server -> scheduler.tick());
+
+        // Single-player and LAN start and stop servers repeatedly inside one
+        // JVM. Without this, leaving a world would leave scheduled charges and
+        // impact watchers holding a dead ServerLevel, and they would fire into
+        // it on the next world's first tick. A dedicated server never noticed,
+        // because the process ended with the world.
+        ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
+            scheduler.clear();
+            cooldowns.clearAll();
+        });
 
         // Air and block right-clicks arrive as two separate events here, unlike
         // Bukkit's single PlayerInteractEvent with an Action enum.
