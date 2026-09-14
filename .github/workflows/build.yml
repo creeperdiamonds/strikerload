@@ -136,6 +136,24 @@ jobs:
             dist/**/StrikerLoad-*.jar
             SHA256SUMS.txt
           body: |
+            ## Which jar do I download?
+
+            | Your server version | Download the jar ending in |
+            |---|---|
+            | Minecraft 26.2 | `-mc26.2.jar` |
+            | Minecraft 26.1.x | `-mc26.1.jar` |
+            | Minecraft 1.21.11 and below | `-mc1.21.11.jar` |
+
+            There is one jar per Minecraft generation and they are **not**
+            interchangeable. Installing the wrong one fails at startup with
+            `Unsupported API version` in the console, or
+            `UnsupportedClassVersionError` on a Java 21 server, and the plugin
+            never loads. Check the suffix against the table before restarting.
+
+            Paper, Purpur and other Paper forks use the same jar.
+
+            ---
+
             Built by GitHub Actions from ${{ github.sha }}.
 
             Verify what you downloaded matches what was built from this source:
