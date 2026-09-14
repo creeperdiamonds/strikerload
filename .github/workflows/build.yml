@@ -3,7 +3,7 @@ name: Build
 on:
   push:
     branches: [main]
-    tags: ['v*']
+    tags: ['v*', 'FAB-*']
   pull_request:
   workflow_dispatch:
 
@@ -219,6 +219,61 @@ jobs:
             nodes - see strikerload-fabric/README.md.
 
             ---
+
+            Built by GitHub Actions from ${{ github.sha }}.
+
+            Verify what you downloaded matches what was built from this source:
+
+            ```
+            sha256sum -c SHA256SUMS.txt
+            ```
+
+            Build log: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            Licensed AGPL-3.0-or-later.
+
+  # A FAB-* tag publishes only the Fabric jars, on its own version line.
+  # A v* tag still goes through `release` above, which globs StrikerLoad-*.jar
+  # and therefore publishes both platforms together.
+  release-fabric:
+    if: startsWith(github.ref, 'refs/tags/FAB-')
+    needs: build-fabric
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: StrikerLoad-fabric-*
+          path: dist
+
+      - name: Collect checksums
+        run: |
+          find dist -name '*.sha256' -exec cat {} \; | sort > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/**/StrikerLoad-Fabric-*.jar
+            SHA256SUMS.txt
+          body: |
+            Fabric build of StrikerLoad. Server-side only, and it needs Fabric API.
+
+            ## Which jar do I download?
+
+            | Your server version | Download the jar ending in |
+            |---|---|
+            | Minecraft 26.2 | `+mc26.2.jar` |
+            | Minecraft 26.1.x | `+mc26.1.2.jar` |
+            | Minecraft 1.21.11 | `+mc1.21.11.jar` |
+
+            These go in `mods/`, not `plugins/`. There is one jar per
+            Minecraft generation and they are **not** interchangeable.
+
+            Two things that differ from the Paper plugin: permissions gate on
+            vanilla **operator level** rather than the plugin's
+            `strikerload.use.*` nodes, and config is JSON at
+            `config/strikerload.json`. Both are covered in
+            `strikerload-fabric/README.md`.
 
             Built by GitHub Actions from ${{ github.sha }}.
 
