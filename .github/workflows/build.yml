@@ -40,7 +40,7 @@ jobs:
           )
           FAIL=0
           for p in "${PATTERNS[@]}"; do
-            if grep -rInE "$p" --include='*.java' strikerload-core/src strikerload-paper/src; then
+            if grep -rInE "$p" --include='*.java' strikerload-core/src strikerload-paper/src strikerload-fabric/src; then
               echo "::error::Forbidden API matched: $p"
               FAIL=1
             fi
@@ -56,7 +56,7 @@ jobs:
         run: |
           if grep -rInE 'import (org\.bukkit|net\.minecraft|net\.fabricmc|net\.kyori|net\.md_5)' strikerload-core/src; then
             echo "::error::strikerload-core must stay platform-independent."
-            echo "Platform types belong in strikerload-paper (or a future loader module)."
+            echo "Platform types belong in strikerload-paper or strikerload-fabric."
             exit 1
           fi
           echo "Core is clean."
@@ -116,9 +116,58 @@ jobs:
             strikerload-paper/target/StrikerLoad-*.jar
             strikerload-paper/target/*.sha256
 
+
+  # Fabric is a separate Gradle build, not a Maven profile, because Loom is
+  # Gradle-only. One shared source tree, three toolchains: 1.21.11 is the last
+  # obfuscated generation and needs fabric-loom-remap plus Mojang mappings on
+  # Java 21, while 26.x ships deobfuscated and uses plain fabric-loom on Java 25.
+  build-fabric:
+    needs: audit
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: mc26.2
+            jdk: '25'
+            label: 'fabric-26.2'
+          - target: mc26.1
+            jdk: '25'
+            label: 'fabric-26.1.x'
+          - target: mc1.21.11
+            jdk: '21'
+            label: 'fabric-1.21.11'
+    name: ${{ matrix.label }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.jdk }}
+          cache: gradle
+
+      - name: Package
+        working-directory: strikerload-fabric
+        run: ./gradlew --no-daemon --console=plain :${{ matrix.target }}:build
+
+      - name: Checksum
+        working-directory: strikerload-fabric/targets/${{ matrix.target }}/build/libs
+        run: |
+          for j in StrikerLoad-Fabric-*.jar; do
+            sha256sum "$j" | tee "$j.sha256"
+          done
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: StrikerLoad-${{ matrix.label }}
+          path: |
+            strikerload-fabric/targets/${{ matrix.target }}/build/libs/StrikerLoad-Fabric-*.jar
+            strikerload-fabric/targets/${{ matrix.target }}/build/libs/*.sha256
+
   release:
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: build
+    needs: [build, build-fabric]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
@@ -138,19 +187,36 @@ jobs:
           body: |
             ## Which jar do I download?
 
+            Pick by **server software** first, then by **Minecraft version**.
+
+            ### Paper / Purpur / Folia - goes in `plugins/`
+
             | Your server version | Download the jar ending in |
             |---|---|
-            | Minecraft 26.2 | `-mc26.2.jar` |
-            | Minecraft 26.1.x | `-mc26.1.jar` |
-            | Minecraft 1.21.11 and below | `-mc1.21.11.jar` |
+            | Minecraft 26.2 | `StrikerLoad-...-mc26.2.jar` |
+            | Minecraft 26.1.x | `StrikerLoad-...-mc26.1.jar` |
+            | Minecraft 1.21.11 and below | `StrikerLoad-...-mc1.21.11.jar` |
+
+            ### Fabric - goes in `mods/`, and needs Fabric API
+
+            | Your server version | Download the jar ending in |
+            |---|---|
+            | Minecraft 26.2 | `StrikerLoad-Fabric-...+mc26.2.jar` |
+            | Minecraft 26.1.x | `StrikerLoad-Fabric-...+mc26.1.2.jar` |
+            | Minecraft 1.21.11 | `StrikerLoad-Fabric-...+mc1.21.11.jar` |
+
+            The `-Fabric-` ones are mods and will do nothing in a `plugins/`
+            folder; the plain ones are plugins and will do nothing in `mods/`.
 
             There is one jar per Minecraft generation and they are **not**
             interchangeable. Installing the wrong one fails at startup with
             `Unsupported API version` in the console, or
-            `UnsupportedClassVersionError` on a Java 21 server, and the plugin
-            never loads. Check the suffix against the table before restarting.
+            `UnsupportedClassVersionError` on a Java 21 server, and it never
+            loads. Check the suffix against the table before restarting.
 
-            Paper, Purpur and other Paper forks use the same jar.
+            Fabric builds are server-side only and gate on vanilla operator
+            level rather than the plugin's `strikerload.use.*` permission
+            nodes - see strikerload-fabric/README.md.
 
             ---
 

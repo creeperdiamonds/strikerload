@@ -1,0 +1,24 @@
+{
+	"schemaVersion": 1,
+	"id": "strikerload",
+	"version": "${version}",
+	"name": "StrikerLoad",
+	"description": "Orbital strike cannon with TNT-based payloads.",
+	"authors": ["creeperdiamonds"],
+	"contact": {
+		"homepage": "https://github.com/creeperdiamonds/strikerload",
+		"sources": "https://github.com/creeperdiamonds/strikerload",
+		"issues": "https://github.com/creeperdiamonds/strikerload/issues"
+	},
+	"license": "AGPL-3.0-or-later",
+	"environment": "server",
+	"entrypoints": {
+		"main": ["com.creeperdiamonds.strikerload.fabric.StrikerLoadMod"]
+	},
+	"depends": {
+		"fabricloader": ">=0.19.5",
+		"minecraft": "${minecraft}",
+		"java": ">=${java}",
+		"fabric-api": "*"
+	}
+}

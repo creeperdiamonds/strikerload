@@ -1,0 +1,22 @@
+pluginManagement {
+	repositories {
+		maven {
+			name = 'Fabric'
+			url = 'https://maven.fabricmc.net/'
+		}
+		mavenCentral()
+		gradlePluginPortal()
+	}
+}
+
+rootProject.name = 'strikerload-fabric'
+
+// One subproject per Minecraft generation. They all compile the same shared
+// source tree in ../src plus strikerload-core; only the toolchain differs.
+include 'mc1.21.11'
+include 'mc26.1'
+include 'mc26.2'
+
+project(':mc1.21.11').projectDir = file('targets/mc1.21.11')
+project(':mc26.1').projectDir = file('targets/mc26.1')
+project(':mc26.2').projectDir = file('targets/mc26.2')

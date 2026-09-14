@@ -1,0 +1,23 @@
+// Minecraft 1.21.11 - the last obfuscated generation.
+//
+// Needs fabric-loom-remap plus official Mojang mappings, and mod dependencies
+// must go through modImplementation so Loom remaps them. Java 21.
+plugins {
+	id 'net.fabricmc.fabric-loom-remap' version "${loom_version}"
+}
+
+ext {
+	mcVersion = '1.21.11'
+	fabricApiVersion = '0.141.6+1.21.11'
+	javaRelease = 21
+	mcDepend = '~1.21.11'
+}
+
+apply from: "${rootProject.projectDir}/targets/common.gradle"
+
+dependencies {
+	minecraft "com.mojang:minecraft:${mcVersion}"
+	mappings loom.officialMojangMappings()
+	modImplementation "net.fabricmc:fabric-loader:${loader_version}"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${fabricApiVersion}"
+}

@@ -1,0 +1,46 @@
+// Shared by every target. Each target's build.gradle sets mcVersion,
+// fabricApiVersion, javaRelease and mcDepend, then applies this file.
+//
+// There is exactly one copy of the mod source. All three targets compile it,
+// because 1.21.11 and 26.x turned out to agree on every Minecraft class this
+// mod touches - see strikerload-fabric/README.md.
+
+group = maven_group
+version = "${mod_version}+mc${mcVersion}"
+
+base {
+	archivesName = 'StrikerLoad-Fabric'
+}
+
+sourceSets.main.java.srcDirs = [
+	"${rootProject.projectDir}/src/main/java",
+	// strikerload-core is plain Java with no platform imports, so it is
+	// compiled straight in rather than published to a Maven repo first.
+	"${rootProject.projectDir}/../strikerload-core/src/main/java"
+]
+sourceSets.main.resources.srcDirs = ["${rootProject.projectDir}/src/main/resources"]
+
+processResources {
+	inputs.property 'version', project.version
+	inputs.property 'mcDepend', mcDepend
+	inputs.property 'javaRelease', javaRelease
+
+	filesMatching('fabric.mod.json') {
+		expand version: project.version, minecraft: mcDepend, java: javaRelease
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = javaRelease
+}
+
+java {
+	sourceCompatibility = JavaVersion.toVersion(javaRelease)
+	targetCompatibility = JavaVersion.toVersion(javaRelease)
+}
+
+jar {
+	from("${rootProject.projectDir}/../LICENSE") {
+		rename { "${it}_StrikerLoad" }
+	}
+}

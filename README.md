@@ -13,7 +13,7 @@ Community software. Not affiliated with PaperMC, SpigotMC or Mojang.
 ```
 strikerload-core     platform-independent maths and state; zero dependencies
 strikerload-paper   Paper/Purpur/Folia module
-strikerload-fabric   planned; will consume core unchanged
+strikerload-fabric   Fabric module (26.2 / 26.1.x / 1.21.11); consumes core unchanged
 ```
 
 `strikerload-core` holds ring geometry, column bounds, falloff and cooldown
@@ -30,6 +30,20 @@ mvn clean package -P mc1_21_11    # 1.21.11 (JDK 21)
 ```
 
 Jars land in `strikerload-paper/target/`.
+
+The Fabric module is a separate Gradle build, because Loom has no Maven
+equivalent:
+
+```bash
+cd strikerload-fabric
+./gradlew build                   # all three targets
+./gradlew :mc26.2:build           # just one
+```
+
+Jars land in `strikerload-fabric/targets/<target>/build/libs/`. Note that
+Minecraft is deobfuscated from 26.x onward, so 1.21.11 and 26.x use different
+Loom plugins - `strikerload-fabric/README.md` explains why, and what differs
+behaviourally from the plugin (permissions and config format most of all).
 
 | Target   | paper-api                | api-version | JDK |
 |----------|--------------------------|-------------|-----|
@@ -115,7 +129,8 @@ difference between a fun payload and a server that does not come back.
 
 1. Bukkit module — covers CraftBukkit, Spigot and Paper from one jar
 2. Additional Minecraft versions
-3. Fabric module
+3. Permission-mod integration for Fabric, to restore the per-payload
+   `strikerload.use.*` nodes the plugin has
 4. Legacy versions (1.8.8) — see the scope note in SECURITY.md; these cannot
    meet the current no-reflection guarantee and would ship as a separately
    scoped artifact

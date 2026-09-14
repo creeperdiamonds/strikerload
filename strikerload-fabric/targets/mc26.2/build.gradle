@@ -1,0 +1,22 @@
+// Minecraft 26.2 - deobfuscated, so there is nothing to remap.
+//
+// Uses plain fabric-loom (not -remap), declares no mappings at all, and takes
+// its dependencies via implementation rather than modImplementation. Java 25.
+plugins {
+	id 'net.fabricmc.fabric-loom' version "${loom_version}"
+}
+
+ext {
+	mcVersion = '26.2'
+	fabricApiVersion = '0.160.0+26.2'
+	javaRelease = 25
+	mcDepend = '~26.2'
+}
+
+apply from: "${rootProject.projectDir}/targets/common.gradle"
+
+dependencies {
+	minecraft "com.mojang:minecraft:${mcVersion}"
+	implementation "net.fabricmc:fabric-loader:${loader_version}"
+	implementation "net.fabricmc.fabric-api:fabric-api:${fabricApiVersion}"
+}
